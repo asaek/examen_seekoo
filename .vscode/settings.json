@@ -1,0 +1,13 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    "files.defaultLanguage": "dart",
+    // "dart.flutterSdkPaths": [
+    //     ".fvm/flutter_sdk"
+    // ],
+    "editor.formatOnSave": true,
+    "files.refactoring.autoSave": false,
+    "dart.experimentalRefactors": true,
+}
