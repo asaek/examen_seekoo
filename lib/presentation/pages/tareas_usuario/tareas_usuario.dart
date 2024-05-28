@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../bloc/blocs.dart';
+import '../pages.dart';
 
 class TareasUsuarioPage extends StatelessWidget {
   static const routerName = '/tareas_usuario';
@@ -16,7 +18,24 @@ class TareasUsuarioPage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () {
+              //* Se guarda el usuario que se selecciono para las tareas
+              final int idUsuario =
+                  context.read<TareasUsuarioCubit>().state.tareas![0].userId;
+
+              context.read<HomeBloc>().usuarioNewTask = idUsuario;
+
+              context.push(AddNewTaskPage.routerName);
+
+              // context.read<HomeBloc>().streamerInsertarTarea(
+              //       TareaEntity(
+              //         id: 0,
+              //         title: 'Tarea de usuario',
+              //         completed: false,
+              //         userId: 1,
+              //       ),
+              //     );
+            },
           ),
         ],
       ),

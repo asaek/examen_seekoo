@@ -3,12 +3,12 @@ import 'package:examen_seekoo/data/models/models.dart';
 import 'package:examen_seekoo/domain/entities/entities.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../../config/database_helper/database_helper.dart';
 import '../../../domain/data_sources/usuario_datasource/usuario_datasource.dart';
+import '../../datasources_locales/database_helper/database_local_data_source_impl.dart';
 import '../../mappers/usuario_mapper/usuario_mapper.dart';
 
 class UsuarioDataSourceImpl extends UsuarioDataSource {
-  final DatabaseHelper databaseHelper;
+  final DatabaseLocalDataSourceImpl databaseHelper;
 
   UsuarioDataSourceImpl({required this.databaseHelper});
 
@@ -19,7 +19,7 @@ class UsuarioDataSourceImpl extends UsuarioDataSource {
         baseUrl: 'https://jsonplaceholder.typicode.com',
       ),
     );
-    final Database db = await databaseHelper.database;
+    final Database db = databaseHelper.database;
 
     try {
       //! Cargar de la base de datos local

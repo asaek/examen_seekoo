@@ -6,7 +6,7 @@ sealed class GetUsuariosUserCase {
   Future<List<UsuarioEntitie>> getUsuarios();
 }
 
-class GetUsuariosUserCaseImpl implements GetUsuariosUserCase {
+class GetUsuariosUserCaseImpl extends GetUsuariosUserCase {
   final UsuarioRepository usuarioRepository;
 
   GetUsuariosUserCaseImpl({required this.usuarioRepository});

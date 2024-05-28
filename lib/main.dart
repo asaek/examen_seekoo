@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'config/go_router/router.dart';
 import 'presentation/bloc/blocs.dart';
 import 'presentation/bloc/service_location.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
+  await locator.isReady<Database>();
   runApp(const BlocsProviders());
 }
 

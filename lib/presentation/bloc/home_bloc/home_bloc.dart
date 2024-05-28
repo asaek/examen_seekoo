@@ -9,8 +9,28 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetUsuariosUserCase getUsuariosUserCase;
+  final DelTaskUserCase delTaskUserCase;
+  final InsertTaskUserCase insertTaskUserCase;
+  late int usuarioNewTask;
 
-  HomeBloc({required this.getUsuariosUserCase}) : super(HomeInitial()) {
+  // UsuarioEntitie usuarioNewTask = UsuarioEntitie(
+  //   id: 0,
+  //   name: '',
+  //   username: '',
+  //   email: '',
+  //   address: null,
+  //   phone: '',
+  //   website: '',
+  //   company: '',
+  //   error: '',
+  //   listaTareas: null,
+  // );
+
+  HomeBloc({
+    required this.delTaskUserCase,
+    required this.getUsuariosUserCase,
+    required this.insertTaskUserCase,
+  }) : super(HomeInitial()) {
     // on<HomeEvent>((HomeEvent event, Emitter<HomeState> emit) {});
     on<GetUsuarios>(_getUsuarios);
   }
@@ -20,7 +40,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       final List<UsuarioEntitie> usuarios =
           await getUsuariosUserCase.getUsuarios();
-      print(usuarios);
+
       emit(HomeLoaded(usuarios: usuarios));
     } catch (e) {
       emit(HomeError(error: e.toString()));
@@ -32,7 +52,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   //* Comunicacion con blocs
-  void streamerBorrarTarea(TareaEntity tarea) {
-    print(tarea);
+  void streamerBorrarTarea(TareaEntity tarea) async {
+    final bool borrado = await delTaskUserCase.deleteTask(tarea.id.toString());
+  }
+
+  void streamerInsertarTarea(TareaEntity tarea) async {
+    // final TareaEntity tareaTest = TareaEntity(
+    //   id: 0,
+    //   title: 'Asaek',
+    //   completed: false,
+    //   userId: 1,
+    // );
+
+    // final int idInsertado = await insertTaskUserCase.insertTask(tareaTest);
+    // print(idInsertado);
   }
 }

@@ -14,5 +14,10 @@ final appRouter = GoRouter(
       path: '/tareas_usuario',
       builder: (context, state) => const TareasUsuarioPage(),
     ),
+    GoRoute(
+      name: AddNewTaskPage.routerName,
+      path: '/add_new_task',
+      builder: (context, state) => const AddNewTaskPage(),
+    ),
   ],
 );
