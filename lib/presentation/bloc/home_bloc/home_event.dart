@@ -8,3 +8,12 @@ sealed class HomeEvent extends Equatable {
 }
 
 class GetUsuarios extends HomeEvent {}
+
+class NewTask extends HomeEvent {
+  final TareaEntity newTask;
+
+  const NewTask({required this.newTask});
+
+  @override
+  List<Object> get props => [newTask];
+}

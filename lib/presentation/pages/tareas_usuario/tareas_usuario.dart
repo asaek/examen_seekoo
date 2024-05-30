@@ -26,15 +26,6 @@ class TareasUsuarioPage extends StatelessWidget {
               context.read<HomeBloc>().usuarioNewTask = idUsuario;
 
               context.push(AddNewTaskPage.routerName);
-
-              // context.read<HomeBloc>().streamerInsertarTarea(
-              //       TareaEntity(
-              //         id: 0,
-              //         title: 'Tarea de usuario',
-              //         completed: false,
-              //         userId: 1,
-              //       ),
-              //     );
             },
           ),
         ],
@@ -64,9 +55,11 @@ class TareasUsuarioPage extends StatelessWidget {
                         IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
-                            // context.read<TareasUsuarioCubit>().removeTareaUsuario(
-                            //       tareas[index],
-                            //     );
+                            context.read<UpdateTaskCubit>().updateTaskSelected(
+                                  state.tareas![index],
+                                );
+
+                            context.push(AddNewTaskPage.routerName);
                           },
                         ),
                         IconButton(

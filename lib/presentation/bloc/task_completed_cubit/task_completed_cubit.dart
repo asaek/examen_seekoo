@@ -1,8 +1,11 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 
-part 'task_completed_state.dart';
+class TaskCompletedCubit extends Cubit<bool> {
+  TaskCompletedCubit() : super(false);
 
-class TaskCompletedCubit extends Cubit<TaskCompletedState> {
-  TaskCompletedCubit() : super(TaskCompletedInitial());
+  void toggleTaskCompleted() => emit(!state);
+
+  void setTaskCompleted() => emit(true);
+
+  void resetTaskCompleted() => emit(false);
 }

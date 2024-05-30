@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../domain/entities/entities.dart';
+import '../../bloc/blocs.dart';
 
 class AddNewTaskPage extends StatefulWidget {
   static const routerName = '/add_new_task';
@@ -12,7 +16,24 @@ class AddNewTaskPage extends StatefulWidget {
 class _AddNewTaskPageState extends State<AddNewTaskPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
+  late TareaEntity? isUpdateTask;
   String? _nameError;
+
+  @override
+  void initState() {
+    isUpdateTask = context.read<UpdateTaskCubit>().state.tareaEntity;
+
+    if (isUpdateTask != null) {
+      _titleController.text = isUpdateTask!.title;
+      if (isUpdateTask!.completed) {
+        context.read<TaskCompletedCubit>().setTaskCompleted();
+      } else {
+        context.read<TaskCompletedCubit>().resetTaskCompleted();
+      }
+    }
+
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -25,28 +46,39 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
       // El formulario es válido, realiza la acción deseada
       // Puedes acceder al título con _titleController.text
       // Y al estado del interruptor con _isCompleted
-      print('Title: ${_titleController.text}');
+
+      if (isUpdateTask != null) {
+        final TareaEntity updateTask = TareaEntity(
+          id: isUpdateTask!.id,
+          userId: isUpdateTask!.userId,
+          title: _titleController.text,
+          completed: context.read<TaskCompletedCubit>().state,
+        );
+
+        context.read<UpdateTaskCubit>().updateTask(
+              table: 'tasks',
+              task: updateTask,
+            );
+      } else {
+        final TareaEntity newTask = TareaEntity(
+          id: null,
+          userId: context.read<HomeBloc>().usuarioNewTask,
+          title: _titleController.text,
+          completed: context.read<TaskCompletedCubit>().state,
+        );
+
+        context.read<HomeBloc>().newTaskSave(newTask);
+      }
     }
   }
 
-  // void _validateName(String value) {
-  //   if (value.isEmpty) {
-  //     setState(() {
-  //       _nameError = 'Por favor, ingresa tu nombre';
-  //     });
-  //   } else {
-  //     setState(() {
-  //       _nameError = null;
-  //     });
-  //   }
-  // }
-//! Se tiene que imlementar el switch con el cubit que cree
-//! y que reaccione el bloc al crear la tarea
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Agregar nueva tarea'),
+        title: Text(
+          (isUpdateTask == null) ? 'Agregar nueva tarea' : 'Actualiza la tarea',
+        ),
       ),
       body: SafeArea(
         bottom: false,
@@ -93,22 +125,30 @@ class _SwitchTareaCompletada extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        const Text(
-          'Tarea Completada',
-          // 'Switch is ${isSwitched ? "ON" : "OFF"}',
-          style: TextStyle(fontSize: 24),
-        ),
-        const Spacer(),
-        Switch(
-          value: true,
-          onChanged: (value) {},
-          activeTrackColor: Colors.lightGreenAccent,
-          activeColor: Colors.green,
-        ),
-      ],
+    return BlocBuilder<TaskCompletedCubit, bool>(
+      builder: (context, state) {
+        final isSwitched =
+            context.select((TaskCompletedCubit cubit) => cubit.state);
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              (isSwitched) ? 'Tarea Completada' : 'Tarea Pendiente',
+              // 'Switch is ${isSwitched ? "ON" : "OFF"}',
+              style: const TextStyle(fontSize: 24),
+            ),
+            const Spacer(),
+            Switch(
+              value: isSwitched,
+              onChanged: (value) {
+                context.read<TaskCompletedCubit>().toggleTaskCompleted();
+              },
+              activeTrackColor: Colors.lightGreenAccent,
+              activeColor: Colors.green,
+            ),
+          ],
+        );
+      },
     );
   }
 }

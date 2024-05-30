@@ -9,7 +9,7 @@ class DatabaseLocalDataSourceImpl extends DatabaseLocalDataSource {
   DatabaseLocalDataSourceImpl({required this.database});
 
   @override
-  Future<bool> deleteData(String id) async {
+  Future<bool> deleteTask(String id) async {
     final int respuesta = await database.delete(
       'tasks',
       where: 'id = ?',
@@ -21,7 +21,7 @@ class DatabaseLocalDataSourceImpl extends DatabaseLocalDataSource {
   }
 
   @override
-  Future<int> insertData(TareaEntity task) async {
+  Future<int> insertTask(TareaEntity task) async {
     final int respuesta =
         await database.insert('tasks', toMaptask(tarea: task));
 
@@ -29,8 +29,19 @@ class DatabaseLocalDataSourceImpl extends DatabaseLocalDataSource {
   }
 
   @override
-  Future<bool> updateData(String table, Map<String, dynamic> data) async {
-    return true;
+  Future<bool> updateTask(
+      {required String table, required TareaEntity task}) async {
+    final data = toMaptask(tarea: task);
+
+    final int respuesta = await database.update(
+      table,
+      data,
+      where: 'id = ?',
+      whereArgs: [data['id']],
+    );
+
+    if (respuesta >= 1) return true;
+    return false;
   }
 
   // Future<int> deleteTask(int id) async {

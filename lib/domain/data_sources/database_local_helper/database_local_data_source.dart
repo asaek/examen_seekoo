@@ -1,7 +1,7 @@
 import '../../entities/entities.dart';
 
 abstract class DatabaseLocalDataSource {
-  Future<int> insertData(TareaEntity task);
-  Future<bool> updateData(String table, Map<String, dynamic> data);
-  Future<bool> deleteData(String id);
+  Future<int> insertTask(TareaEntity task);
+  Future<bool> updateTask({required String table, required TareaEntity task});
+  Future<bool> deleteTask(String id);
 }

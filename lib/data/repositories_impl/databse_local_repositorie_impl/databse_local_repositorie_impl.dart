@@ -9,16 +9,17 @@ class DatabaseLocalRepositoryImpl implements DatabaseLocalRepository {
 
   @override
   Future<bool> deleteData(String id) async {
-    return await databaseLocalDataSource.deleteData(id);
+    return await databaseLocalDataSource.deleteTask(id);
   }
 
   @override
   Future<int> insertData(TareaEntity task) async {
-    return await databaseLocalDataSource.insertData(task);
+    return await databaseLocalDataSource.insertTask(task);
   }
 
   @override
-  Future<bool> updateData(String table, Map<String, dynamic> data) async {
-    return await databaseLocalDataSource.updateData(table, data);
+  Future<bool> updateData(
+      {required String table, required TareaEntity task}) async {
+    return await databaseLocalDataSource.updateTask(table: table, task: task);
   }
 }

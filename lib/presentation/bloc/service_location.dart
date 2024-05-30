@@ -39,22 +39,35 @@ void setupLocator() {
       InsertTaskUserCaseImpl(
           databaseLocalRepository: locator<DatabaseLocalRepository>()));
 
+  locator.registerLazySingleton<UpdateTaskUserCase>(() =>
+      UpdateTaskUserCaseImpl(
+          databaseLocalRepository: locator<DatabaseLocalRepository>()));
+
+  //* Cubits
+  locator.registerLazySingleton<TareasUsuarioCubit>(
+    () => TareasUsuarioCubit(),
+  );
+
+  locator.registerLazySingleton<TaskCompletedCubit>(() => TaskCompletedCubit());
+
+  locator.registerLazySingleton<UpdateTaskCubit>(
+      () => UpdateTaskCubit(updateTaskUserCase: locator<UpdateTaskUserCase>()));
+
+  //* Services helpers etc
+  locator.registerLazySingleton<DatabaseLocalDataSourceImpl>(
+      () => DatabaseLocalDataSourceImpl(database: locator<Database>()));
+
   //* Blocs
   locator.registerLazySingleton<HomeBloc>(
     () => HomeBloc(
       getUsuariosUserCase: locator<GetUsuariosUserCase>(),
       delTaskUserCase: locator<DelTaskUserCase>(),
       insertTaskUserCase: locator<InsertTaskUserCase>(),
+      deleteTaskRecibe: locator<TareasUsuarioCubit>().streamerNewTask,
+      newTaskSendCallBack:
+          locator<TareasUsuarioCubit>().addTareaUsuarioCallback,
     ),
   );
-
-  //* Cubits
-  locator.registerLazySingleton<TareasUsuarioCubit>(() =>
-      TareasUsuarioCubit(borrarTarea: locator<HomeBloc>().streamerBorrarTarea));
-
-  //* Services helpers etc
-  locator.registerLazySingleton<DatabaseLocalDataSourceImpl>(
-      () => DatabaseLocalDataSourceImpl(database: locator<Database>()));
 
   //? uso de locator.registerLazySingletonAsync para inicializar la base de datos
   locator.registerLazySingletonAsync<Database>(() async {

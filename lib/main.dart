@@ -26,6 +26,12 @@ class BlocsProviders extends StatelessWidget {
         BlocProvider<TareasUsuarioCubit>(
           create: (BuildContext context) => locator<TareasUsuarioCubit>(),
         ),
+        BlocProvider<TaskCompletedCubit>(
+          create: (BuildContext context) => locator<TaskCompletedCubit>(),
+        ),
+        BlocProvider<UpdateTaskCubit>(
+          create: (BuildContext context) => locator<UpdateTaskCubit>(),
+        ),
       ],
       child: const MyApp(),
     );
