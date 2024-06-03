@@ -156,7 +156,7 @@ Map<String, Object?> toMapTarea({required TareaModel tarea}) {
     'id': tarea.id,
     'userId': tarea.userId,
     'title': tarea.title,
-    'completed': tarea.completed,
+    'completed': tarea.completed ? 1 : 0,
   };
 }
 

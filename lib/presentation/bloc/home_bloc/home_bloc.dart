@@ -15,6 +15,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final InsertTaskUserCase insertTaskUserCase;
   late int usuarioNewTask;
   final Stream<TareaEntity> deleteTaskRecibe;
+  final Stream<TareaEntity> updateTaskRecibe;
+
   final NewTaskSendCallBack? newTaskSendCallBack;
 
   HomeBloc({
@@ -22,6 +24,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     required this.getUsuariosUserCase,
     required this.insertTaskUserCase,
     required this.deleteTaskRecibe,
+    required this.updateTaskRecibe,
     this.newTaskSendCallBack,
   }) : super(HomeInitial()) {
     // Listener for new tasks
@@ -29,9 +32,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       streamerBorrarTarea(newTask);
     });
 
+    updateTaskRecibe.listen((newTask) {
+      streamUpdateTarea(newTask);
+    });
+
     // on<HomeEvent>((HomeEvent event, Emitter<HomeState> emit) {});
     on<GetUsuarios>(_getUsuarios);
     on<NewTask>(_newTaskEmit);
+    on<DeleteTask>(_deleteTask);
+    on<UpdateTask>(_updateTask);
   }
 
   void _getUsuarios(GetUsuarios event, Emitter<HomeState> emit) async {
@@ -74,6 +83,45 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
+  void _deleteTask(DeleteTask event, Emitter<HomeState> emit) async {
+    final bool borrado =
+        await delTaskUserCase.deleteTask(event.tarea.id.toString());
+
+    if (borrado) {
+      if (state is HomeLoaded) {
+        List<UsuarioEntitie> usuarios =
+            (state as HomeLoaded).usuarios.map((usuario) {
+          if (usuario.id == event.tarea.userId) {
+            final List<TareaEntity> listaTareas =
+                List.from(usuario.listaTareas!);
+            listaTareas.remove(event.tarea);
+            return usuario.copyWith(listaTareas: listaTareas);
+          }
+          return usuario;
+        }).toList();
+
+        emit(HomeLoaded(usuarios: usuarios));
+      }
+    }
+  }
+
+  void _updateTask(UpdateTask event, Emitter<HomeState> emit) async {
+    if (state is HomeLoaded) {
+      List<UsuarioEntitie> usuarios =
+          (state as HomeLoaded).usuarios.map((usuario) {
+        if (usuario.id == event.tarea.userId) {
+          final List<TareaEntity> listaTareas = List.from(usuario.listaTareas!);
+          final index =
+              listaTareas.indexWhere((tarea) => tarea.id == event.tarea.id);
+          listaTareas[index] = event.tarea;
+          return usuario.copyWith(listaTareas: listaTareas);
+        }
+        return usuario;
+      }).toList();
+      emit(HomeLoaded(usuarios: usuarios));
+    }
+  }
+
   void getUsuarios() {
     add(GetUsuarios());
   }
@@ -83,8 +131,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   //* Comunicacion con blocs
-  void streamerBorrarTarea(TareaEntity tareaBorrar) async {
-    final bool borrado =
-        await delTaskUserCase.deleteTask(tareaBorrar.id.toString());
+  void streamerBorrarTarea(TareaEntity tareaBorrar) {
+    add(DeleteTask(tarea: tareaBorrar));
+  }
+
+  void streamUpdateTarea(TareaEntity tarea) {
+    add(UpdateTask(tarea: tarea));
   }
 }

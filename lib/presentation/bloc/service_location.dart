@@ -11,6 +11,7 @@ import '../../domain/data_sources/data_sources.dart';
 import '../../domain/repositories/repositories.dart';
 import '../../domain/user_cases/user_cases.dart';
 
+//! Al borrar no se Actualiza la lista principal
 GetIt locator = GetIt.instance;
 void setupLocator() {
   //* Datasources
@@ -64,6 +65,7 @@ void setupLocator() {
       delTaskUserCase: locator<DelTaskUserCase>(),
       insertTaskUserCase: locator<InsertTaskUserCase>(),
       deleteTaskRecibe: locator<TareasUsuarioCubit>().streamerNewTask,
+      updateTaskRecibe: locator<UpdateTaskCubit>().streamerUpdateTask,
       newTaskSendCallBack:
           locator<TareasUsuarioCubit>().addTareaUsuarioCallback,
     ),

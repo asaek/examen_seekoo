@@ -43,28 +43,6 @@ class DatabaseLocalDataSourceImpl extends DatabaseLocalDataSource {
     if (respuesta >= 1) return true;
     return false;
   }
-
-  // Future<int> deleteTask(int id) async {
-  //   return await database.delete(
-  //     'tasks',
-  //     where: 'id = ?',
-  //     whereArgs: [id],
-  //   );
-  // }
-
-  // Future<void> borrarDatabase() async {
-  //   final dbPath = await getDatabasesPath();
-  //   final path = join(dbPath, 'app.db');
-
-  //   if (await databaseExists(path)) {
-  //     await deleteDatabase(path);
-  //   }
-  // }
-
-  // Future close() async {
-  //   final db = database;
-  //   db.close();
-  // }
 }
 
 Map<String, Object?> toMaptask({required TareaEntity tarea}) {
@@ -72,7 +50,7 @@ Map<String, Object?> toMaptask({required TareaEntity tarea}) {
     'id': tarea.id,
     'title': tarea.title,
     'userId': tarea.userId,
-    'completed': tarea.completed,
+    'completed': tarea.completed ? 1 : 0,
   };
 }
 

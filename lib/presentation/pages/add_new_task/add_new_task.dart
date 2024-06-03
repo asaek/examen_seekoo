@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../domain/entities/entities.dart';
 import '../../bloc/blocs.dart';
@@ -43,10 +44,6 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      // El formulario es válido, realiza la acción deseada
-      // Puedes acceder al título con _titleController.text
-      // Y al estado del interruptor con _isCompleted
-
       if (isUpdateTask != null) {
         final TareaEntity updateTask = TareaEntity(
           id: isUpdateTask!.id,
@@ -59,7 +56,10 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
               table: 'tasks',
               task: updateTask,
             );
+        context.read<TareasUsuarioCubit>().updateTareaUsuario(updateTask);
+        context.pop();
       } else {
+        //* Nueva tarea
         final TareaEntity newTask = TareaEntity(
           id: null,
           userId: context.read<HomeBloc>().usuarioNewTask,
@@ -68,6 +68,8 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
         );
 
         context.read<HomeBloc>().newTaskSave(newTask);
+        // context.read<TareasUsuarioCubit>().newTareaUsuario(newTask);
+        context.pop();
       }
     }
   }
@@ -109,7 +111,11 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                 ElevatedButton(
                   // onPressed: () {},
                   onPressed: _submitForm,
-                  child: const Text('Agregar tarea'),
+                  child: Text(
+                    (isUpdateTask == null)
+                        ? 'Agregar nueva tarea'
+                        : 'Actualiza la tarea',
+                  ),
                 ),
               ],
             ),

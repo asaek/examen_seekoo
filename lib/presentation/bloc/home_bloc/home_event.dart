@@ -17,3 +17,21 @@ class NewTask extends HomeEvent {
   @override
   List<Object> get props => [newTask];
 }
+
+class DeleteTask extends HomeEvent {
+  final TareaEntity tarea;
+
+  const DeleteTask({required this.tarea});
+
+  @override
+  List<Object> get props => [tarea];
+}
+
+class UpdateTask extends HomeEvent {
+  final TareaEntity tarea;
+
+  const UpdateTask({required this.tarea});
+
+  @override
+  List<Object> get props => [tarea];
+}
